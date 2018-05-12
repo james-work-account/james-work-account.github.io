@@ -31,11 +31,56 @@
     transition: all 0.5s ease;
 }
 
-.code-name {
-
+.header > div {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
-@media all and (max-width: 380px) {
+.code-name {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0.5em;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+    width: 100%;
+    text-align: left;
+    font-size: 20px;
+}
+
+.content > ul > li > div {
+    padding-top: 1em;
+    transition: 0.5s;
+}
+
+.content > ul > li > div > ul {
+    padding-bottom: 0.5em;
+}
+
+footer {
+    position: fixed;
+    bottom:0;
+    width:100%;
+}
+
+footer * {
+    margin: 0;
+    float: left;
+}
+
+footer ul {
+    transform: translateY(-0.75em);
+}
+
+.list-group {
+    padding-bottom: 1.5em;
+}
+
+@media all and (max-width: 450px) {
     .nav > li {
         float: none;
     }

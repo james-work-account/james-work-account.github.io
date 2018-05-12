@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Regex</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/custom.css">
+</head>
+<body>
+    <div class="header">
+        <div class="jumbotron text-center">
+            <h1>SCALA DUMP ZONE</h1>
+            <p>Helper page for Scala snippets</p>
+        </div>
+        <div class="navigation">
+            <ul class="nav nav-tabs" role="tablist">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="interesting.html">Interesting</a></li>
+                <li class="active"><a href="#">Regex</a></li>
+                <li><a href="#">XML</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <button type="button" class="code-name" data-toggle="collapse" data-target="#regex1">Getting values out of a string using Regex
+                </button>
+                <div id="regex1" class="collapse">
+                    <ul>
+                        <li>Start with an input string, call it <code>input</code>.</li>
+                        <li>Define a regex pattern, call it <code>pattern</code>.</li>
+                        <li>Define values as <code>val pattern(val1, val2, ...) = input</code></li>
+                    </ul>
+                    <p>This example regex finds the two sentences and saves them as individual values.</p>
+                    <pre>
+scala> val testString = "I am a sentence. I am another sentence."
+testString: String = I am a sentence. I am another sentence.
+
+scala> val pattern = "^(.*)\\.\\s(.*)\\.$".r
+pattern: scala.util.matching.Regex = ^(.*)\.\s(.*)\.$
+
+scala> val pattern(sentenceOne, sentenceTwo) = testString
+sentenceOne: String = I am a sentence
+sentenceTwo: String = I am another sentence
+    </pre>
+
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name" data-toggle="collapse" data-target="#regex2">Regex matching
+                </button>
+                <div id="regex2" class="collapse">
+                    <ul>
+                        <li>Start with an input string, call it <code>input</code>.</li>
+                        <li>Define a regex pattern, call it <code>pattern</code>, add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
+                        <li>Check the string matches with <code>input.matches(regex)</code></li>
+                    </ul>
+                    <p>This example regex is for a valid time for a 24hr clock.</p>
+                    <pre>
+scala> val regex = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+regex: String = ^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$
+
+scala> val testStringOne = "12:59"
+testStringOne: String = 12:59
+
+scala> val testStringTwo = "12:60"
+testStringTwo: String = 12:60
+
+scala> testStringOne.matches(regex)
+res0: Boolean = true
+
+scala> testStringTwo.matches(regex)
+res1: Boolean = false
+
+</pre>
+                </div>
+            </li>
+        </ul>
+        <footer>
+            <h3>My links:</h3>
+            <ul class="list-unstyled">
+                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i> Stack Overflow</button></li>
+                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i> Github</button></li>
+            </ul>
+        </footer>
+    </div>
+</body>
+</html>

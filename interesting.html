@@ -19,6 +19,7 @@
             <ul class="nav nav-tabs" role="tablist">
                 <li><a href="index.html">Home</a></li>
                 <li class="active"><a href="#">Interesting</a></li>
+                <li><a href="regex.html">Regex</a></li>
                 <li><a href="#">XML</a></li>
             </ul>
         </div>
@@ -28,9 +29,10 @@
 
         <ul class="list-group">
             <li class="list-group-item">
-                <button type="button" class="code-name" data-toggle="collapse" data-target="#demo">onSuccess inside a function
+                <button type="button" class="code-name" data-toggle="collapse" data-target="#onSuccess">onSuccess inside a function
                 </button>
-                <div id="demo" class="collapse">
+                <div id="onSuccess" class="collapse">
+                    <h4>Passing a function as a curried parameter to create an onSuccess block</h4>
 
         <pre>
 def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[Result]): Future[Result] = {
@@ -40,9 +42,28 @@ def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[
   }
 }
     </pre>
+                    <hr>
+
+                    <h4>Use:</h4>
+<pre>
+def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
+  implicit request =>
+    requestToJson(request) {
+      json =>
+        Future.successful(Ok(json))
+    }
+}
+</pre>
                 </div>
             </li>
         </ul>
+        <footer>
+            <h3>My links:</h3>
+            <ul class="list-unstyled">
+                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i> Stack Overflow</button></li>
+                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i> Github</button></li>
+            </ul>
+        </footer>
     </div>
 </body>
 </html>
