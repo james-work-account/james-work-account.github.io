@@ -1,0 +1,58 @@
+.nav {
+    font-size: 20px;
+}
+
+.nav > li:first-child {
+    padding-left: 3em;
+}
+
+.jumbotron {
+    margin-bottom: 2em;
+}
+
+.content {
+    padding: 1em 5em;
+}
+
+.list-unstyled > li {
+    padding: 0.25em 0.5em;
+}
+
+.list-unstyled > li > button {
+    -webkit-filter: brightness(100%);
+}
+
+.list-unstyled > li > button:hover {
+    -webkit-filter: brightness(70%);
+    -webkit-transition: all 0.5s ease;
+    -moz-transition: all 0.5s ease;
+    -o-transition: all 0.5s ease;
+    -ms-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+}
+
+.code-name {
+
+}
+
+@media all and (max-width: 380px) {
+    .nav > li {
+        float: none;
+    }
+
+    .nav > li + li {
+        margin-top: 2px;
+        margin-left: 0
+    }
+
+    .nav > li:first-child {
+        padding-left: 0;
+    }
+
+    .nav > li > a {
+        margin-right: 0;
+        border-radius: 0;
+        border-right: 0 solid transparent;
+        border-left: 0 solid transparent;
+    }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interesting Scala</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="../css/custom.css">
+</head>
+<body>
+    <div class="header">
+        <div class="jumbotron text-center">
+            <h1>SCALA DUMP ZONE</h1>
+            <p>Helper page for Scala snippets</p>
+        </div>
+        <div class="navigation">
+            <ul class="nav nav-tabs" role="tablist">
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="#">Interesting</a></li>
+                <li><a href="#">XML</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="content">
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <button type="button" class="code-name" data-toggle="collapse" data-target="#demo">onSuccess inside a function
+                </button>
+                <div id="demo" class="collapse">
+
+        <pre>
+def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[Result]): Future[Result] = {
+  Try(request.body.asJson.get) match {
+    case Success(json) => onSuccess(json)
+    case Failure(_) => Future.successful(UnsupportedMediaType)
+  }
+}
+    </pre>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
