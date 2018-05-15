@@ -34,7 +34,7 @@
                 <div id="regex1" class="collapse">
                     <ul>
                         <li>Start with an input string, call it <code>input</code>.</li>
-                        <li>Define a regex pattern, call it <code>pattern</code>.</li>
+                        <li>Define a regex pattern, call it <code>pattern</code>, and add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
                         <li>Define values as <code>val pattern(val1, val2, ...) = input</code></li>
                     </ul>
                     <p>This example regex finds the two sentences and saves them as individual values.</p>
@@ -58,7 +58,7 @@ sentenceTwo: String = I am another sentence
                 <div id="regex2" class="collapse">
                     <ul>
                         <li>Start with an input string, call it <code>input</code>.</li>
-                        <li>Define a regex pattern, call it <code>pattern</code>, add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
+                        <li>Define a regex pattern, call it <code>pattern</code>.</li>
                         <li>Check the string matches with <code>input.matches(regex)</code></li>
                     </ul>
                     <p>This example regex is for a valid time for a 24hr clock.</p>
@@ -85,8 +85,8 @@ res1: Boolean = false
         <footer>
             <h3>My links:</h3>
             <ul class="list-unstyled">
-                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i> Stack Overflow</button></li>
-                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i> Github</button></li>
+                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
+                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
             </ul>
         </footer>
     </div>
