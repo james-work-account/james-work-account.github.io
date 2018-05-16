@@ -10,35 +10,37 @@
     <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
-    <div class="header">
-        <div class="jumbotron text-center">
-            <h1>SCALA DUMP ZONE</h1>
-            <p>Helper page for Scala snippets</p>
-        </div>
-        <div class="navigation">
-            <ul class="nav nav-tabs" role="tablist">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="interesting.html">Interesting</a></li>
-                <li class="active"><a href="#">Regex</a></li>
-                <li><a href="#">XML</a></li>
-            </ul>
-        </div>
-    </div>
-
     <div class="content">
+        <header>
+            <div class="jumbotron text-center">
+                <h1>SCALA DUMP ZONE</h1>
+                <p>Helper page for Scala snippets</p>
+            </div>
+            <div class="navigation">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="interesting.html">Interesting</a></li>
+                    <li class="active"><a href="#">Regex</a></li>
+                    <li><a href="#">XML</a></li>
+                    <li><a href="#">AWS</a></li>
+                </ul>
+            </div>
+        </header>
 
-        <ul class="list-group">
-            <li class="list-group-item">
-                <button type="button" class="code-name" data-toggle="collapse" data-target="#regex1">Getting values out of a string using Regex
-                </button>
-                <div id="regex1" class="collapse">
-                    <ul>
-                        <li>Start with an input string, call it <code>input</code>.</li>
-                        <li>Define a regex pattern, call it <code>pattern</code>, and add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
-                        <li>Define values as <code>val pattern(val1, val2, ...) = input</code></li>
-                    </ul>
-                    <p>This example regex finds the two sentences and saves them as individual values.</p>
-                    <pre>
+        <div class="content-body">
+
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <button type="button" class="code-name" data-toggle="collapse" data-target="#regex1">Getting values out of a string using Regex
+                    </button>
+                    <div id="regex1" class="collapse">
+                        <ul>
+                            <li>Start with an input string, call it <code>input</code>.</li>
+                            <li>Define a regex pattern, call it <code>pattern</code>, and add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
+                            <li>Define values as <code>val pattern(val1, val2, ...) = input</code></li>
+                        </ul>
+                        <p style="padding-top: 10px;">This example regex finds the two sentences and saves them as individual values.</p>
+                        <pre>
 scala> val testString = "I am a sentence. I am another sentence."
 testString: String = I am a sentence. I am another sentence.
 
@@ -48,21 +50,44 @@ pattern: scala.util.matching.Regex = ^(.*)\.\s(.*)\.$
 scala> val pattern(sentenceOne, sentenceTwo) = testString
 sentenceOne: String = I am a sentence
 sentenceTwo: String = I am another sentence
-    </pre>
+        </pre>
 
-                </div>
-            </li>
-            <li class="list-group-item">
-                <button type="button" class="code-name" data-toggle="collapse" data-target="#regex2">Regex matching
-                </button>
-                <div id="regex2" class="collapse">
-                    <ul>
-                        <li>Start with an input string, call it <code>input</code>.</li>
-                        <li>Define a regex pattern, call it <code>pattern</code>.</li>
-                        <li>Check the string matches with <code>input.matches(regex)</code></li>
-                    </ul>
-                    <p>This example regex is for a valid time for a 24hr clock.</p>
-                    <pre>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <button type="button" class="code-name" data-toggle="collapse" data-target="#regex2">Getting multiple values out of a string using Regex
+                        </button>
+                        <div id="regex2" class="collapse">
+                            <ul>
+                                <li>Start with an input string, call it <code>input</code>.</li>
+                                <li>Define a regex pattern, call it <code>pattern</code>, and add <code>.r</code> to the end to convert it into a <code>scala.util.matching.Regex</code>.</li>
+                                <li>Define values as <code>val output = (pattern.findAllIn(input))</code> (or use infix notation) and convert it into a <code>List</code> by appending <code>.toList</code>.</li>
+                            </ul>
+                            <p style="padding-top: 10px;">This example regex finds all numbers in a string and puts them in a <code>List</code>.</p>
+                            <pre>
+    scala> val input = "12345 abc abc 67890"
+    input: String = 12345 abc abc 67890
+
+    scala> val pattern = "\\d".r
+    pattern: scala.util.matching.Regex = \d
+
+    scala> val ints = (pattern findAllIn input).toList
+    ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
+
+            </pre>
+                        </div>
+                </li>
+                <li class="list-group-item">
+                    <button type="button" class="code-name" data-toggle="collapse" data-target="#regex3">Regex matching
+                    </button>
+                    <div id="regex3" class="collapse">
+                        <ul>
+                            <li>Start with an input string, call it <code>input</code>.</li>
+                            <li>Define a regex pattern, call it <code>pattern</code>.</li>
+                            <li>Check the string matches with <code>input.matches(regex)</code></li>
+                        </ul>
+                        <p style="padding-top: 10px;">This example regex is for a valid time for a 24hr clock.</p>
+                        <pre>
 scala> val regex = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
 regex: String = ^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$
 
@@ -78,17 +103,18 @@ res0: Boolean = true
 scala> testStringTwo.matches(regex)
 res1: Boolean = false
 
-</pre>
-                </div>
-            </li>
-        </ul>
-        <footer>
-            <h3>My links:</h3>
-            <ul class="list-unstyled">
-                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
-                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
+    </pre>
+                    </div>
+                </li>
             </ul>
-        </footer>
+        </div>
     </div>
+    <footer>
+        <h3>My links:</h3>
+        <ul class="list-unstyled">
+            <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
+            <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
+        </ul>
+    </footer>
 </body>
 </html>

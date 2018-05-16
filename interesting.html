@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
-    <div class="header">
+    <div class="content">
+        <header>
         <div class="jumbotron text-center">
             <h1>SCALA DUMP ZONE</h1>
             <p>Helper page for Scala snippets</p>
@@ -21,27 +22,30 @@
                 <li class="active"><a href="#">Interesting</a></li>
                 <li><a href="regex.html">Regex</a></li>
                 <li><a href="#">XML</a></li>
+                <li><a href="#">AWS</a></li>
             </ul>
         </div>
-    </div>
+    </header>
 
-    <div class="content">
 
-        <ul class="list-group">
+        <div class="content-body">
+            <ul class="list-group">
             <li class="list-group-item">
                 <button type="button" class="code-name" data-toggle="collapse" data-target="#onSuccess">onSuccess inside a function
                 </button>
                 <div id="onSuccess" class="collapse">
                     <h4>Passing a function as a curried parameter to create an onSuccess block</h4>
+                    <p>You can turn a function into a Higher-Order Function and curry your parameters in order to avoid duplicated code, and to make code blocks more human-readable through abstracting methods which might otherwise look cumbersome.</p>
+                    <p>Example: with Scala Play, turning a POST request's body into JSON and custom-handling any errors with a <code>Try</code> block. If the <code>Try</code> is successful in this example, the JSON will be passed as a parameter into the <code>JsValue -> Future[Result]</code> block to later be converted from JSON into a <code>Future[Result]</code>.</p>
 
         <pre>
 def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[Result]): Future[Result] = {
   Try(request.body.asJson.get) match {
     case Success(json) => onSuccess(json)
-    case Failure(_) => Future.successful(UnsupportedMediaType)
+    case Failure(_) => Future.successful(UnsupportedMediaType("This is not JSON..."))
   }
 }
-    </pre>
+</pre>
                     <hr>
 
                     <h4>Use:</h4>
@@ -56,14 +60,109 @@ def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
 </pre>
                 </div>
             </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name" data-toggle="collapse" data-target="#either">Either[Left, Right]
+                </button>
+                <div id="either" class="collapse">
+                    <h4>Catching exceptions with <span class="code"><em>Either</em>[<em>Left</em>, <em>Right</em>]</span></h4>
+
+                    <p>Use similar to <code>Option</code></p>
+                    <p>Example, storing either a <code>Throwable</code> or a <code>String</code> as a form of validation:</p>
+                    <pre>
+scala> def isCorrectString(input: String): Either[Throwable, String] = {
+     |   if(input == "I match perfectly") Right("IT'S A MATCH")
+     |   else Left(new Exception("It didn't match..."))
+     | }
+isCorrectString: (input: String)Either[Throwable,String]
+
+scala> isCorrectString("I match perfectly")
+res0: Either[Throwable,String] = Right(IT'S A MATCH)
+
+scala> isCorrectString("I do not match perfectly")
+res1: Either[Throwable,String] = Left(java.lang.Exception: It didn't match...)
+    </pre>
+                    <hr>
+
+                    <h4>Checking if a <code>Collection</code> contains a <code>Left</code></h4>
+                    <p>An example of when this can be helpful is if you are making POSTing multiple documents to an API and want to see if they all passed or not.</p>
+                    <pre>
+scala> val seq: Seq[Either[Int, String]] = Seq(Right("string"), Right("string"), Left(3), Right("string"))
+seq: Seq[Either[Int,String]] = List(Right(string), Right(string), Left(3), Right(string))
+
+scala> seq.exists(_.isLeft)
+res0: Boolean = true
+
+scala> val seq2: Seq[Either[Int, String]] = Seq(Right("string"), Right("string"), Right("string"))
+seq2: Seq[Either[Int,String]] = List(Right(string), Right(string), Right(string))
+
+scala> seq2.exists(_.isLeft)
+res1: Boolean = false
+                    </pre>
+                    <hr>
+
+                    <h4><code>Either</code> in <code>for</code> comprehensions</h4>
+                    <p>Another way to check if there is a <code>Left</code> in your results, you can have a <code>for</code> comprehension handle each value.</p>
+                    <p>The <code>for</code> comprehension will fall over at the line containing the <code>Left</code> and will not bother analysing the rest of the comprehension, which is good if you want to capture at which point an error occurred for debugging your code.</p>
+                    <p style="font-weight: bold">Setup:</p>
+                    <pre>
+scala> case class Error(msg: String)
+defined class Error
+
+scala> type Validation[+A] = Either[Error, A]
+defined type alias Validation
+
+scala> val result1: Validation[Int] = Right(42)
+result1: Validation[Int] = Right(42)
+
+scala> val result2: Validation[String] = Right("Is the Answer")
+result2: Validation[String] = Right(Is the Answer)
+
+scala> val result3: Validation[Int] = Left(Error("Ooops Failed"))
+result3: Validation[Int] = Left(Error(Ooops Failed))
+                    </pre>
+                    <p style="font-weight: bold">Putting each <code style="font-weight: normal">Right</code> in a <code style="font-weight: normal">Seq</code>:</p>
+                    <pre>
+scala> val response = for {
+     |   res1 <- result1.right
+     |   res2 <- result2.right
+     |   res3 <- result3.right
+     | } yield {
+     |   Seq(res1, res2, res3)
+     | }
+response: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))
+                    </pre>
+                    <p style="font-weight: bold">The comprehension even falls over if you don't end up using the <code style="font-weight: normal">Left</code> value:</p>
+                    <pre>
+scala> val response2 = for {
+     |   res1 <- result1.right
+     |   res2 <- result2.right
+     |   res3 <- result3.right
+     | } yield {
+     |   Seq(res1, res2)
+     | }
+response2: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))
+                    </pre>
+                    <p style="font-weight: bold">The comprehension will pass if all of the values are <code style="font-weight: normal">Right</code>:</p>
+                    <pre>
+scala> val respose3 = for {
+     |   res1 <- result1.right
+     |   res2 <- result2.right
+     | } yield {
+     |   Seq(res1, res2)
+     | }
+respose3: scala.util.Either[Error,Seq[Any]] = Right(List(42, Is the Answer))
+                    </pre>
+                </div>
+            </li>
         </ul>
-        <footer>
-            <h3>My links:</h3>
-            <ul class="list-unstyled">
-                <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
-                <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
-            </ul>
-        </footer>
     </div>
+    </div>
+    <footer>
+        <h3>My links:</h3>
+        <ul class="list-unstyled">
+            <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
+            <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
+        </ul>
+    </footer>
 </body>
 </html>
