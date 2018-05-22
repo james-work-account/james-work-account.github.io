@@ -84,7 +84,8 @@ res1: Either[Throwable,String] = Left(java.lang.Exception: It didn't match...)
                     <hr>
 
                     <h4>Checking if a <code>Collection</code> contains a <code>Left</code></h4>
-                    <p>An example of when this can be helpful is if you are making POSTing multiple documents to an API and want to see if they all passed or not.</p>
+                    <p>An example of where this can be useful is if you are making multiple POST requests to an API and want to verify that they have all passed.</p>
+                    <p>You would do this by checking if a Collection contains any <code>Left</code> values with <code>.exists(_.isLeft)</code>.</p>
                     <pre>
 scala> val seq: Seq[Either[Int, String]] = Seq(Right("string"), Right("string"), Left(3), Right("string"))
 seq: Seq[Either[Int,String]] = List(Right(string), Right(string), Left(3), Right(string))
@@ -101,8 +102,9 @@ res1: Boolean = false
                     <hr>
 
                     <h4><code>Either</code> in <code>for</code> comprehensions</h4>
-                    <p>Another way to check if there is a <code>Left</code> in your results, you can have a <code>for</code> comprehension handle each value.</p>
-                    <p>The <code>for</code> comprehension will fall over at the line containing the <code>Left</code> and will not bother analysing the rest of the comprehension, which is good if you want to capture at which point an error occurred for debugging your code.</p>
+                    <p>Another way to see if there is a <code>Left</code> in your results is to use a <code>for</code> comprehension to handle each value.</p>
+                    <p>The <code>for</code> comprehension will fall over at the line containing the <code>Left</code>, and will subsequently not analyse the rest of the comprehension.</p>
+                    <p>This is helpful if you want to capture at which point an error occurred when debugging your code.</p>
                     <p style="font-weight: bold">Setup:</p>
                     <pre>
 scala> case class Error(msg: String)

@@ -101,6 +101,11 @@ footer ul {
     transform: translateY(-0.75em);
 }
 
+footer h3 {
+    display: inline-block;
+    margin: 0 0.5em;
+}
+
 .list-group {
     padding-bottom: 1.5em;
 }

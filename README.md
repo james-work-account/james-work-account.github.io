@@ -4,6 +4,20 @@
 
 ---
 
+## Contents
+
+- Random snippets
+  - onSuccess inside a function (curried parameters)
+  - Either[Left, Right]
+- Regex
+  - Getting values out of a string using Regex
+  - Getting multiple values out of a string using Regex
+  - Regex matching
+- ~~XML~~ (TBC)
+- ~~AWS~~ (TBC)
+
+---
+
 **To run on local server**
 
 Install `http-server`:
