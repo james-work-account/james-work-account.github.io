@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Regex</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -16,7 +17,9 @@
                 <h1>SCALA DUMP ZONE</h1>
                 <p>Helper page for Scala snippets</p>
             </div>
-            <div class="navigation">
+            <nav class="navigation">
+                <input type="checkbox" id="dropdown-menu" />
+                <label for="dropdown-menu">Menu&nbsp;&nbsp;>&nbsp;&nbsp;Regex</label>
                 <ul class="nav nav-tabs" role="tablist">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="interesting.html">Interesting</a></li>
@@ -24,7 +27,7 @@
                     <li><a href="#">XML</a></li>
                     <li><a href="#">AWS</a></li>
                 </ul>
-            </div>
+            </nav>
         </header>
 
         <div class="content-body">
@@ -65,15 +68,14 @@ sentenceTwo: String = I am another sentence
                             </ul>
                             <p style="padding-top: 10px;">This example regex finds all numbers in a string and puts them in a <code>List</code>.</p>
                             <pre>
-    scala> val input = "12345 abc abc 67890"
-    input: String = 12345 abc abc 67890
+scala> val input = "12345 abc abc 67890"
+input: String = 12345 abc abc 67890
 
-    scala> val pattern = "\\d".r
-    pattern: scala.util.matching.Regex = \d
+scala> val pattern = "\\d".r
+pattern: scala.util.matching.Regex = \d
 
-    scala> val ints = (pattern findAllIn input).toList
-    ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-
+scala> val ints = (pattern findAllIn input).toList
+ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
             </pre>
                         </div>
                 </li>
@@ -102,7 +104,6 @@ res0: Boolean = true
 
 scala> testStringTwo.matches(regex)
 res1: Boolean = false
-
     </pre>
                     </div>
                 </li>
@@ -112,6 +113,8 @@ res1: Boolean = false
     <footer>
         <h3>My links:</h3>
         <ul class="list-unstyled">
+            <li><button type="button" class="btn btn-so" id="so-icon" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i></button></li>
+            <li><button type="button" class="btn btn-git" id="git-icon" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i></button></li>
             <li><button type="button" class="btn btn-so" onclick="location.href='https://stackoverflow.com/users/8230810/james-whiteley'"><i class="fa fa-stack-overflow pr-1"></i>&nbsp;Stack Overflow</button></li>
             <li><button type="button" class="btn btn-git" onclick="location.href='https://github.com/james-work-account'"><i class="fa fa-github pr-1"></i>&nbsp;Github</button></li>
         </ul>

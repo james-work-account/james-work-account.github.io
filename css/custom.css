@@ -2,6 +2,10 @@ body, html {
     height: 100%;
 }
 
+#dropdown-menu, .navigation > label {
+    display: none;
+}
+
 .nav {
     font-size: 20px;
 }
@@ -110,7 +114,36 @@ footer h3 {
     padding-bottom: 1.5em;
 }
 
+.list-unstyled > li > button, .btn {
+    display: block;
+}
+
+.list-unstyled > li > #so-icon, .list-unstyled > li > #git-icon {
+    display: none;
+}
+
 @media only screen and (max-width: 768px) {
+
+    .navigation > label {
+        display: block;
+        padding: 5px 15px 10px;
+        font-size: 20px;
+    }
+
+    li.active > a {
+        border: none !important;
+    }
+
+    #dropdown-menu:checked ~ ul {
+        max-height: 2000px;
+    }
+
+    #dropdown-menu ~ ul {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 1s ease-in-out;
+    }
+
     .nav > li {
         float: none;
     }
@@ -135,12 +168,31 @@ footer h3 {
         padding: 0;
     }
 
-    footer {
-        height: 9vh;
-        padding: 2em 3em;
+    .content-body > h2 {
+        font-size: 22px;
+        padding: 0 0.5em;
     }
 
     .content {
-        max-height: calc(100% - 9vh);
+        max-height: calc(100% - 10vh);
+    }
+
+    footer {
+        height: 10vh;
+        padding: 1em 1.5em 3em;
+    }
+
+    footer > h3 {
+        padding-top: 5px;
+    }
+
+    .list-unstyled > li > button, .btn {
+        display: none;
+    }
+
+    .list-unstyled > li > #so-icon, .list-unstyled > li > #git-icon {
+        display: inline-block;
+        font-size: 20px;
+        padding: 10px 1.5em 10px;
     }
 }
