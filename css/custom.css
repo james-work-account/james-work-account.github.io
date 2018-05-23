@@ -2,7 +2,7 @@ body, html {
     height: 100%;
 }
 
-#dropdown-menu, .navigation > label {
+#dropdown-menu, .navigation > div > label {
     display: none;
 }
 
@@ -54,7 +54,7 @@ header > div {
 
 .code-name {
     background: none;
-    color: inherit;
+    color: #7e7e7e;
     border: none;
     padding: 0.5em;
     font: inherit;
@@ -63,6 +63,11 @@ header > div {
     width: 100%;
     text-align: left;
     font-size: 20px;
+    transition: 0.5s;
+}
+
+.collapsed {
+    color: inherit;
 }
 
 .content > ul > li > div {
@@ -122,12 +127,79 @@ footer h3 {
     display: none;
 }
 
+.menu {
+    height: 30px;
+    width: 30px;
+    display: none;
+}
+
 @media only screen and (max-width: 450px) {
 
-    .navigation > label {
+    .navigation > div > label {
+        display: inline-block;
+        padding: 5px 20px 10px;
+        font-size: 25px;
+        width: 100%;
+        position: relative;
+    }
+
+    .dropdown-menu-title {
+        padding: 0 1em 0 0;
+    }
+
+    .hamburger-box {
+        position: absolute;
+        display: inline-block;
+        width: 40px;
+        height: 30px;
+        right: 10px;
+    }
+
+    :after, :before {
+        box-sizing: inherit;
+    }
+
+    .hamburger-inner, .hamburger-inner:after, .hamburger-inner:before {
+        position: absolute;
+        width: 30px;
+        height: 4px;
+        transition-timing-function: ease;
+        transition-duration: .15s;
+        transition-property: transform;
+        border-radius: 4px;
+        background-color: #222222;
+        transition: bottom .08s ease-out 0s,top .08s ease-out 0s,opacity 0s linear;
+    }
+    .hamburger-inner {
+        top: 50%;
         display: block;
-        padding: 5px 15px 10px;
-        font-size: 20px;
+        margin-top: -2px;
+    }
+    .hamburger-inner:before {
+        top: -10px;
+    }
+    .hamburger-inner:after {
+        bottom: -10px;
+    }
+    .hamburger-inner:after, .hamburger-inner:before {
+        display: block;
+        content: "";
+    }
+
+    .is-active > .hamburger-inner {
+        background-color: white;
+    }
+
+    .is-active > .hamburger-inner:before {
+        display: block;
+        top: 50%;
+        transform: rotate(45deg);
+    }
+
+    .is-active > .hamburger-inner:after {
+        display: block;
+        top: 50%;
+        transform: rotate(-45deg);
     }
 
     li.active > a {
@@ -135,13 +207,13 @@ footer h3 {
     }
 
     #dropdown-menu:checked ~ ul {
-        max-height: 2000px;
+        max-height: 300px;
     }
 
     #dropdown-menu ~ ul {
         max-height: 0;
         overflow: hidden;
-        transition: max-height 1s ease-in-out;
+        transition: max-height 0.5s;
     }
 
     .nav > li {

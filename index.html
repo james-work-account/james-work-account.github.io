@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
     <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
@@ -19,7 +20,13 @@
             </div>
             <nav class="navigation">
                 <input type="checkbox" id="dropdown-menu" />
-                <label for="dropdown-menu">Menu&nbsp;&nbsp;>&nbsp;&nbsp;Home</label>
+                <div class="dropdown-menu-title">
+                    <label for="dropdown-menu" onclick="toggleHamburger()">Menu&nbsp;&nbsp;>&nbsp;&nbsp;Home
+                        <div class="hamburger-box">
+                            <div class="hamburger-inner"></div>
+                        </div>
+                    </label>
+                </div>
                 <ul class="nav nav-tabs" role="tablist">
                     <li class="active"><a href="#">Home</a></li>
                     <li><a href="interesting.html">Interesting</a></li>

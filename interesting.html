@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/custom.js"></script>
     <link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
@@ -19,7 +20,13 @@
         </div>
         <nav class="navigation">
             <input type="checkbox" id="dropdown-menu" />
-            <label for="dropdown-menu">Menu&nbsp;&nbsp;>&nbsp;&nbsp;Interesting</label>
+            <div class="dropdown-menu-title">
+                <label for="dropdown-menu" onclick="toggleHamburger()">Menu&nbsp;&nbsp;>&nbsp;&nbsp;Interesting
+                    <div class="hamburger-box">
+                        <div class="hamburger-inner"></div>
+                    </div>
+                </label>
+            </div>
             <ul class="nav nav-tabs" role="tablist">
                 <li><a href="index.html">Home</a></li>
                 <li class="active"><a href="#">Interesting</a></li>
@@ -34,7 +41,7 @@
         <div class="content-body">
             <ul class="list-group">
             <li class="list-group-item">
-                <button type="button" class="code-name" data-toggle="collapse" data-target="#onSuccess">onSuccess inside a function
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#onSuccess">onSuccess inside a function
                 </button>
                 <div id="onSuccess" class="collapse">
                     <h4>Passing a function as a curried parameter to create an onSuccess block</h4>
@@ -64,7 +71,7 @@ def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
                 </div>
             </li>
             <li class="list-group-item">
-                <button type="button" class="code-name" data-toggle="collapse" data-target="#either">Either[Left, Right]
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#either">Either[Left, Right]
                 </button>
                 <div id="either" class="collapse">
                     <h4>Catching exceptions with <span class="code"><em>Either</em>[<em>Left</em>, <em>Right</em>]</span></h4>
