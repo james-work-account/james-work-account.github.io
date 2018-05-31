@@ -2,6 +2,12 @@ body, html {
     height: 100%;
 }
 
+.body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
 #dropdown-menu, .navigation > div > label {
     display: none;
 }
@@ -24,7 +30,51 @@ body, html {
 }
 
 .content-body {
-    padding: 1em 5em;
+    display: flex;
+    flex-direction: row-reverse;
+    padding: 1em 1em 1em 5em;
+}
+
+.list-group {
+    width: 65%;
+}
+
+.regex-tester {
+    width: 35%;
+    display: block;
+    flex-flow: column wrap;
+    padding-left: 1em;
+}
+
+.regex-tester > h3 {
+    margin-top: 10px;
+}
+
+.regex-tester-content {
+    display: inline-block;
+    width: 70%;
+}
+
+.regex-tester-content > input {
+    padding: 0 0.5em;
+}
+
+.regex-tester-content * {
+    display: flex;
+    flex-flow: row wrap;
+    width: 100%;
+    height: 2.5em;
+    margin-bottom: 0.25em;
+}
+
+#output {
+    width: calc(30% - 1.5em);
+    padding-left: 0.5em;
+    height: 100%;
+    font-size: 20px;
+    vertical-align: top;
+    text-align: left;
+    display: inline-block;
 }
 
 .list-unstyled > li {
@@ -94,11 +144,13 @@ pre {
 
 footer {
     border-top: 1px solid #ddd;
-    padding: 2em 5em;
-    position: sticky;
+    padding: 2em 3em;
+    position: fixed;
     bottom:0;
     width:100%;
     height: 8vh;
+    background-color: white;
+    margin-bottom: 0.5em;
 }
 
 footer * {
@@ -133,7 +185,58 @@ footer h3 {
     display: none;
 }
 
-@media only screen and (max-width: 450px) {
+@media only screen and (max-width: 1250px) {
+    .content-body {
+        flex-direction: column;
+        padding: 1em 5em;
+    }
+
+    .list-group {
+        width: 100%;
+    }
+
+    .regex-tester {
+        width: 100%;
+    }
+
+    .regex-tester-content {
+        width: 80%
+    }
+
+    .regex-tester-content * {
+        display: inline-block;
+        float: left;
+        width: calc(25% - 0.5em);
+        margin: 0 0.5em 1em 0;
+        font-size: 15px;
+    }
+
+    #output {
+        display: inline-block;
+        float: right;
+        text-align: left;
+        width: calc(20% - 0.5em);
+    }
+}
+
+@media only screen and (max-width: 767px) {
+
+    .regex-tester-content, .regex-tester-content *, #output {
+        float: left;
+        display: block;
+        width: 100%;
+    }
+
+    .regex-tester {
+        padding: 0 0 1em 0;
+    }
+}
+
+@media only screen and (max-width: 540px) {
+
+    .dropdown-menu-title > label {
+        cursor: pointer;
+    }
 
     .navigation > div > label {
         display: inline-block;
@@ -250,8 +353,8 @@ footer h3 {
     }
 
     footer {
-        height: 10vh;
-        padding: 1em 1.5em 3em;
+        padding: 1.5em 1.5em 5em;
+        margin-bottom: 0;
     }
 
     footer > h3 {
@@ -267,9 +370,13 @@ footer h3 {
         font-size: 20px;
         padding: 10px 1.5em 10px;
     }
+
+    .regex-tester {
+        padding: 0.5em 0.5em 1em;
+    }
 }
 
-@media only screen and (max-width: 360px) {
+@media only screen and (max-width: 375px) {
     .jumbotron {
         margin-bottom: 0.5em;
         padding: 10px 0;
@@ -284,16 +391,17 @@ footer h3 {
     }
 
     footer > h3 {
-        font-size: 20px;
+        margin-bottom: 0.25em;
+        padding-top: 0;
+    }
+
+    footer > ul {
+        border-bottom: 0.25em;
     }
 
     .list-unstyled > li > #so-icon, .list-unstyled > li > #git-icon {
         padding: 5px 1em 5px;
         margin: 5px 0;
-    }
-
-    footer {
-        height: 11vh;
     }
 
     .content {
