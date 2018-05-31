@@ -38,19 +38,19 @@
                 </nav>
             </header>
 
-            <div class="content-body">
+            <div class="content-body regex">
                 <div class="regex-tester">
                     <h3>Regex Tester</h3>
                     <div class="regex-tester-content">
-                        <input type=text id="regex" placeholder="REGEX" />
-                        <input type=text id="flags" placeholder="FLAGS" />
-                        <input type=text id="text" placeholder="INPUT TEXT" />
-                        <button onClick="checkregex()">Test</button>
+                        <input type=text id="regex" placeholder="REGEX" onkeydown="if(event.key === 'Enter') document.getElementById('test-regex').click()" />
+                        <input type=text id="flags" placeholder="FLAGS" onkeydown="if(event.key === 'Enter') document.getElementById('test-regex').click()" />
+                        <input type=text id="text" placeholder="INPUT TEXT" onkeydown="if(event.key === 'Enter') document.getElementById('test-regex').click()" />
+                        <button id="test-regex" onClick="checkregex()">Test</button>
                     </div>
                     <div id="output"><b>Result</b>: </div>
                 </div>
 
-                <ul class="list-group">
+                <ul class="list-group regex">
                     <li class="list-group-item">
                         <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#regex1">Getting values out of a string using Regex
                         </button>

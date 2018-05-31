@@ -25,17 +25,27 @@ body, html {
 }
 
 .content {
-    max-height: calc(100% - 8vh);
+    height: calc(100% - 8vh);
     overflow: auto;
 }
 
 .content-body {
     display: flex;
     flex-direction: row-reverse;
+    padding: 1em 5em 1em 5em;
+}
+
+.content-body.regex {
+    display: flex;
+    flex-direction: row-reverse;
     padding: 1em 1em 1em 5em;
 }
 
 .list-group {
+    width: 100%;
+}
+
+.list-group.regex {
     width: 65%;
 }
 
@@ -75,6 +85,7 @@ body, html {
     vertical-align: top;
     text-align: left;
     display: inline-block;
+    word-break: break-word;
 }
 
 .list-unstyled > li {
@@ -185,18 +196,19 @@ footer h3 {
     display: none;
 }
 
-@media only screen and (max-width: 1250px) {
-    .content-body {
+@media (max-width: 1250px) {
+    .content-body.regex {
         flex-direction: column;
         padding: 1em 5em;
     }
 
-    .list-group {
+    .list-group.regex {
         width: 100%;
     }
 
     .regex-tester {
         width: 100%;
+        padding-bottom: 1em;
     }
 
     .regex-tester-content {
@@ -219,7 +231,7 @@ footer h3 {
     }
 }
 
-@media only screen and (max-width: 767px) {
+@media (max-width: 767px) {
 
     .regex-tester-content, .regex-tester-content *, #output {
         float: left;
@@ -232,7 +244,7 @@ footer h3 {
     }
 }
 
-@media only screen and (max-width: 540px) {
+@media (max-width: 540px) {
 
     .dropdown-menu-title > label {
         cursor: pointer;
@@ -339,11 +351,11 @@ footer h3 {
         border-left: 0 solid transparent;
     }
 
-    .content-body {
+    .content-body, .content-body.regex {
         padding: 0;
     }
 
-    .content-body > h2 {
+    .content-body > h2, .content-body.regex > h2 {
         font-size: 22px;
         padding: 0 0.5em;
     }
@@ -376,7 +388,7 @@ footer h3 {
     }
 }
 
-@media only screen and (max-width: 375px) {
+@media (max-width: 375px) {
     .jumbotron {
         margin-bottom: 0.5em;
         padding: 10px 0;
@@ -408,7 +420,7 @@ footer h3 {
         max-height: calc(100% - 11vh);
     }
 
-    .content-body > h2 {
+    .content-body > h2, .content-body.regex > h2 {
         padding: 0 1em;
     }
 }
