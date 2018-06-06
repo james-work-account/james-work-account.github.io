@@ -33,7 +33,7 @@
                 <li class="active"><a href="#">Interesting</a></li>
                 <li><a href="regex.html">Regex</a></li>
                 <li><a href="xml.html">XML</a></li>
-                <li><a href="#">AWS</a></li>
+                <li><a href="aws.html">AWS</a></li>
             </ul>
         </nav>
     </header>
@@ -164,6 +164,57 @@ scala> val respose3 = for {
      |   Seq(res1, res2)
      | }
 respose3: scala.util.Either[Error,Seq[Any]] = Right(List(42, Is the Answer))
+                    </pre>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#default-function">Fanciness with .apply()
+                </button>
+                <div id="default-function" class="collapse">
+                    <h4>Using apply methods to call different functions by default</h4>
+
+                    <p>Say you are adding logging to an application, and you are using the following class to format it:</p>
+                    <pre>
+scala> final case class LogMessage(keyValuePairs: (String, String)*) {
+     |   def jsonify: String =
+     |     s"""{${keyValuePairs map { case (key, value) => s""""$key":"$value"""" } mkString "," }}"""
+     | }
+defined class LogMessage
+
+scala> val log: String = LogMessage(("message1", "my first message"), ("message2", "my second message")).jsonify
+log: String = {"message1":"my first message","message2":"my second message"}
+                    </pre>
+                    <p>Instead of needing to call <code>.jsonify</code> every time you create a new LogMessage, you can create an object with an <code>.apply</code> method to handle this for you:</p>
+                    <pre>
+scala> object LogMessage {
+     |   def apply(keyValuePairs: (String, Any)*): String = {
+     |     val jsonified = keyValuePairs.map { case (key, value) => s""""$key":"$value"""" }.mkString(",")
+     |     s"{${jsonified}}"
+     |   }
+     | }
+defined object LogMessage                                                                                                          ^
+
+scala> val log2: String = LogMessage(("message1", "my first message"), ("message2", "my second message"))
+log2: String = {"message1":"my first message","message2":"my second message"}
+                    </pre>
+                    <p>More than one Apply method can be created too. Apply methods can really clean up your code nicely if used correctly. Below is a (rather trivial) example of an object containing multiple <code>.apply()</code> methods:</p>
+                    <pre>
+scala> object TypeGuesser {
+     |   def apply(string: String): Right[String, String] = {
+     |     Right("I guess... String!")
+     |   }
+     |
+     |   def apply(int: Int): Left[String, String] = {
+     |     Left("I guess... Int!")
+     |   }
+     | }
+defined object TypeGuesser
+
+scala> TypeGuesser("my string")
+res0: Right[String,String] = Right(I guess... String!)
+
+scala> TypeGuesser(123)
+res1: Left[String,String] = Left(I guess... Int!)
                     </pre>
                 </div>
             </li>

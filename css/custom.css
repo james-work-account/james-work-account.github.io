@@ -41,6 +41,10 @@ body, html {
     padding: 1em 1em 1em 5em;
 }
 
+.homepage-text {
+    flex-direction: row;
+}
+
 .list-group {
     width: 100%;
 }
