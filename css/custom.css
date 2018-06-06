@@ -31,7 +31,7 @@ body, html {
 
 .content-body {
     display: flex;
-    flex-direction: row-reverse;
+    flex-direction: row;
     padding: 1em 5em 1em 5em;
 }
 
@@ -39,10 +39,6 @@ body, html {
     display: flex;
     flex-direction: row-reverse;
     padding: 1em 1em 1em 5em;
-}
-
-.homepage-text {
-    flex-direction: row;
 }
 
 .list-group {
