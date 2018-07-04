@@ -9,11 +9,17 @@
 - Random snippets
   - onSuccess inside a function (curried parameters)
   - Either[Left, Right]
+  - Fanciness with .apply()
+  - Implicit Classes
 - Regex
   - Getting values out of a string using Regex
   - Getting multiple values out of a string using Regex
   - Regex matching
-- ~~XML~~ (TBC)
+- XML
+  - Basics of XML in Scala
+  - ~~Accepting XML in a POST request~~ (TBC)
+  - ~~Modifying nodes using Scala~~ (TBC)
+  - ~~Modifying nodes using an external XSLT file~~ (TBC)
 - ~~AWS~~ (TBC)
 
 ---

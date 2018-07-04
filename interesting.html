@@ -49,26 +49,22 @@
                     <p>You can turn a function into a Higher-Order Function and curry your parameters in order to avoid duplicated code, and to make code blocks more human-readable through abstracting methods which might otherwise look cumbersome.</p>
                     <p>Example: with Scala Play, turning a POST request's body into JSON and custom-handling any errors with a <code>Try</code> block. If the <code>Try</code> is successful in this example, the JSON will be passed as a parameter into the <code>JsValue -> Future[Result]</code> block to later be converted from JSON into a <code>Future[Result]</code>.</p>
 
-        <pre>
-def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[Result]): Future[Result] = {
+        <pre>def requestToJson(request: Request[AnyContent])(onSuccess: => JsValue => Future[Result]): Future[Result] = {
   Try(request.body.asJson.get) match {
     case Success(json) => onSuccess(json)
     case Failure(_) => Future.successful(UnsupportedMediaType("This is not JSON..."))
   }
-}
-</pre>
+}</pre>
                     <hr>
 
                     <h4>Use:</h4>
-<pre>
-def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
+<pre>def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
   implicit request =>
     requestToJson(request) {
       json =>
         Future.successful(Ok(json))
     }
-}
-</pre>
+}</pre>
                 </div>
             </li>
             <li class="list-group-item">
@@ -79,8 +75,7 @@ def handleGet(): Action[AnyContent] = Action.async(parse.anyContent) {
 
                     <p>Use similar to <code>Option</code></p>
                     <p>Example, storing either a <code>Throwable</code> or a <code>String</code> as a form of validation:</p>
-                    <pre>
-scala> def isCorrectString(input: String): Either[Throwable, String] = {
+                    <pre>scala> def isCorrectString(input: String): Either[Throwable, String] = {
      |   if(input == "I match perfectly") Right("IT'S A MATCH")
      |   else Left(new Exception("It didn't match..."))
      | }
@@ -90,15 +85,13 @@ scala> isCorrectString("I match perfectly")
 res0: Either[Throwable,String] = Right(IT'S A MATCH)
 
 scala> isCorrectString("I do not match perfectly")
-res1: Either[Throwable,String] = Left(java.lang.Exception: It didn't match...)
-    </pre>
+res1: Either[Throwable,String] = Left(java.lang.Exception: It didn't match...)</pre>
                     <hr>
 
                     <h4>Checking if a <code>Collection</code> contains a <code>Left</code></h4>
                     <p>An example of where this can be useful is if you are making multiple POST requests to an API and want to verify that they have all passed.</p>
                     <p>You would do this by checking if a Collection contains any <code>Left</code> values with <code>.exists(_.isLeft)</code>.</p>
-                    <pre>
-scala> val seq: Seq[Either[Int, String]] = Seq(Right("string"), Right("string"), Left(3), Right("string"))
+                    <pre>scala> val seq: Seq[Either[Int, String]] = Seq(Right("string"), Right("string"), Left(3), Right("string"))
 seq: Seq[Either[Int,String]] = List(Right(string), Right(string), Left(3), Right(string))
 
 scala> seq.exists(_.isLeft)
@@ -108,8 +101,7 @@ scala> val seq2: Seq[Either[Int, String]] = Seq(Right("string"), Right("string")
 seq2: Seq[Either[Int,String]] = List(Right(string), Right(string), Right(string))
 
 scala> seq2.exists(_.isLeft)
-res1: Boolean = false
-                    </pre>
+res1: Boolean = false</pre>
                     <hr>
 
                     <h4><code>Either</code> in <code>for</code> comprehensions</h4>
@@ -117,8 +109,7 @@ res1: Boolean = false
                     <p>The <code>for</code> comprehension will fall over at the line containing the <code>Left</code>, and will subsequently not analyse the rest of the comprehension.</p>
                     <p>This is helpful if you want to capture at which point an error occurred when debugging your code.</p>
                     <p style="font-weight: bold">Setup:</p>
-                    <pre>
-scala> case class Error(msg: String)
+                    <pre>scala> case class Error(msg: String)
 defined class Error
 
 scala> type Validation[+A] = Either[Error, A]
@@ -131,40 +122,33 @@ scala> val result2: Validation[String] = Right("Is the Answer")
 result2: Validation[String] = Right(Is the Answer)
 
 scala> val result3: Validation[Int] = Left(Error("Ooops Failed"))
-result3: Validation[Int] = Left(Error(Ooops Failed))
-                    </pre>
+result3: Validation[Int] = Left(Error(Ooops Failed))</pre>
                     <p style="font-weight: bold">Putting each <code style="font-weight: normal">Right</code> in a <code style="font-weight: normal">Seq</code>:</p>
-                    <pre>
-scala> val response = for {
+                    <pre>scala> val response = for {
      |   res1 <- result1.right
      |   res2 <- result2.right
      |   res3 <- result3.right
      | } yield {
      |   Seq(res1, res2, res3)
      | }
-response: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))
-                    </pre>
+response: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))</pre>
                     <p style="font-weight: bold">The comprehension even falls over if you don't end up using the <code style="font-weight: normal">Left</code> value:</p>
-                    <pre>
-scala> val response2 = for {
+                    <pre>scala> val response2 = for {
      |   res1 <- result1.right
      |   res2 <- result2.right
      |   res3 <- result3.right
      | } yield {
      |   Seq(res1, res2)
      | }
-response2: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))
-                    </pre>
+response2: scala.util.Either[Error,Seq[Any]] = Left(Error(Ooops Failed))</pre>
                     <p style="font-weight: bold">The comprehension will pass if all of the values are <code style="font-weight: normal">Right</code>:</p>
-                    <pre>
-scala> val respose3 = for {
+                    <pre>scala> val respose3 = for {
      |   res1 <- result1.right
      |   res2 <- result2.right
      | } yield {
      |   Seq(res1, res2)
      | }
-respose3: scala.util.Either[Error,Seq[Any]] = Right(List(42, Is the Answer))
-                    </pre>
+respose3: scala.util.Either[Error,Seq[Any]] = Right(List(42, Is the Answer))</pre>
                 </div>
             </li>
             <li class="list-group-item">
@@ -174,19 +158,16 @@ respose3: scala.util.Either[Error,Seq[Any]] = Right(List(42, Is the Answer))
                     <h4>Using apply methods to call different functions by default</h4>
 
                     <p>Say you are adding logging to an application, and you are using the following class to format it:</p>
-                    <pre>
-scala> final case class LogMessage(keyValuePairs: (String, String)*) {
+                    <pre>scala> final case class LogMessage(keyValuePairs: (String, String)*) {
      |   def jsonify: String =
      |     s"""{${keyValuePairs map { case (key, value) => s""""$key":"$value"""" } mkString "," }}"""
      | }
 defined class LogMessage
 
 scala> val log: String = LogMessage(("message1", "my first message"), ("message2", "my second message")).jsonify
-log: String = {"message1":"my first message","message2":"my second message"}
-                    </pre>
+log: String = {"message1":"my first message","message2":"my second message"}</pre>
                     <p>Instead of needing to call <code>.jsonify</code> every time you create a new LogMessage, you can create an object with an <code>.apply</code> method to handle this for you:</p>
-                    <pre>
-scala> object LogMessage {
+                    <pre>scala> object LogMessage {
      |   def apply(keyValuePairs: (String, Any)*): String = {
      |     val jsonified = keyValuePairs.map { case (key, value) => s""""$key":"$value"""" }.mkString(",")
      |     s"{${jsonified}}"
@@ -195,11 +176,9 @@ scala> object LogMessage {
 defined object LogMessage                                                                                                          ^
 
 scala> val log2: String = LogMessage(("message1", "my first message"), ("message2", "my second message"))
-log2: String = {"message1":"my first message","message2":"my second message"}
-                    </pre>
+log2: String = {"message1":"my first message","message2":"my second message"}</pre>
                     <p>More than one Apply method can be created too. Apply methods can really clean up your code nicely if used correctly. Below is a (rather trivial) example of an object containing multiple <code>.apply()</code> methods:</p>
-                    <pre>
-scala> object TypeGuesser {
+                    <pre>scala> object TypeGuesser {
      |   def apply(string: String): Right[String, String] = {
      |     Right("I guess... String!")
      |   }
@@ -214,8 +193,47 @@ scala> TypeGuesser("my string")
 res0: Right[String,String] = Right(I guess... String!)
 
 scala> TypeGuesser(123)
-res1: Left[String,String] = Left(I guess... Int!)
-                    </pre>
+res1: Left[String,String] = Left(I guess... Int!)</pre>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#implicit-class">Implicit Classes
+                </button>
+                <div id="implicit-class" class="collapse">
+                    <h4>Utilising functions in implicit classes to make your code look nice</h4>
+
+                    <p>If you make a function which multiplies a number by two, it can look pretty ugly:</p>
+                    <pre>scala> val number = 4
+number: Int = 4
+
+scala> def timesTwo(num: Int): Int = num * 2
+timesTwo: (num: Int)Int
+
+scala> timesTwo(number)
+res0: Int = 8</pre>
+                    <p>This can look much nicer and more human-readable though, with the use of implicit classes:</p>
+                    <pre>scala> implicit class NumberManipulation(num: Int) {
+     |   def timesTwo: Int = num * 2
+     | }
+defined class NumberManipulation
+
+scala> number.timesTwo
+res2: Int = 8</pre>
+                    <p>These functions can be stacked too:</p>
+                    <pre>scala> implicit class NumberManipulation(num: Int) {
+     |   def timesTwo: Int = num * 2
+     |   def addThree: Int = num + 3
+     |   def squared: Int = num * num
+     | }
+defined class NumberManipulation
+
+scala> val number = 4
+number: Int = 4
+
+scala> number.timesTwo.addThree.squared
+res1: Int = 121</pre>
+                    <p>Obviously, this can be a lot more powerful than just number manipulation but this demonstrates how more readable this is than defining the functions separately and writing <code>squared(addThree(timesTwo(number)))</code> (or assigning each step to a separate <code>val</code>).</p>
+                    <p>Note: the Implicit Class must be in-scope in order for this to work - you can get around this by doing something like importing it into scope. They must also always be inside another <code>trait</code>/<code>class</code>/<code>object</code>, and can only take one non-implicit argument in their constructor.</p>
                 </div>
             </li>
         </ul>

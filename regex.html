@@ -61,8 +61,7 @@
                                 <li>Define values as <code>val pattern(val1, val2, ...) = input</code></li>
                             </ul>
                             <p style="padding-top: 10px;">This example regex finds the two sentences and saves them as individual values.</p>
-                            <pre>
-scala> val testString = "I am a sentence. I am another sentence."
+                            <pre>scala> val testString = "I am a sentence. I am another sentence."
 testString: String = I am a sentence. I am another sentence.
 
 scala> val pattern = "^(.*)\\.\\s(.*)\\.$".r
@@ -70,9 +69,7 @@ pattern: scala.util.matching.Regex = ^(.*)\.\s(.*)\.$
 
 scala> val pattern(sentenceOne, sentenceTwo) = testString
 sentenceOne: String = I am a sentence
-sentenceTwo: String = I am another sentence
-            </pre>
-
+sentenceTwo: String = I am another sentence</pre>
                         </div>
                     </li>
                     <li class="list-group-item">
@@ -85,16 +82,14 @@ sentenceTwo: String = I am another sentence
                                     <li>Define values as <code>val output = (pattern.findAllIn(input))</code> (or use infix notation) and convert it into a <code>List</code> by appending <code>.toList</code>.</li>
                                 </ul>
                                 <p style="padding-top: 10px;">This example regex finds all numbers in a string and puts them in a <code>List</code>.</p>
-                                <pre>
-scala> val input = "12345 abc abc 67890"
+                                <pre>scala> val input = "12345 abc abc 67890"
 input: String = 12345 abc abc 67890
 
 scala> val pattern = "\\d".r
 pattern: scala.util.matching.Regex = \d
 
 scala> val ints = (pattern findAllIn input).toList
-ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
-                </pre>
+ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)</pre>
                             </div>
                     </li>
                     <li class="list-group-item">
@@ -107,8 +102,7 @@ ints: List[String] = List(1, 2, 3, 4, 5, 6, 7, 8, 9, 0)
                                 <li>Check the string matches with <code>input.matches(regex)</code></li>
                             </ul>
                             <p style="padding-top: 10px;">This example regex is for a valid time for a 24hr clock.</p>
-                            <pre>
-scala> val regex = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
+                            <pre>scala> val regex = "^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$"
 regex: String = ^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$
 
 scala> val testStringOne = "12:59"
@@ -121,8 +115,7 @@ scala> testStringOne.matches(regex)
 res0: Boolean = true
 
 scala> testStringTwo.matches(regex)
-res1: Boolean = false
-        </pre>
+res1: Boolean = false</pre>
                         </div>
                     </li>
                 </ul>

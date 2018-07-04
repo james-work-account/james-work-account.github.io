@@ -47,14 +47,76 @@
                     <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml1">Basics of XML in Scala
                     </button>
                     <div id="xml1" class="collapse">
-                        <ul>
-                            <li>XML Structure</li>
-                            <li>XML in Scala</li>
-                            <li>Searching through XML for text</li>
-                            <li>Searching through XML for tag name</li>
-                            <li>Searching through XML for namespace</li>
-                        </ul>
-                        &lt;xml/&gt;
+                        <p>XML is primarily used as a way of storing data, and looks a bit like HTML but with custom tags:</p>
+                        <pre>&lt;ParentTag&gt;
+    &lt;ChildTag&gt;
+        &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+    &lt;/ChildTag&gt;
+&lt;/ParentTag&gt;</pre>
+                        <p>XML is native to Scala, and writing it is very easy. There are two main types that you can assign XML to in Scala: <code>Elem</code> and <code>NodeSeq</code>. There is also <code>Node</code>, which is one single "tag" inside a NodeSeq.</p>
+                        <pre>
+scala> val xml = &lt;ParentTag&gt;
+|     &lt;ChildTag&gt;
+|         &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+|     &lt;/ChildTag&gt;
+| &lt;/ParentTag&gt;
+xml: scala.xml.Elem =
+&lt;ParentTag&gt;
+    &lt;ChildTag&gt;
+        &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+    &lt;/ChildTag&gt;
+&lt;/ParentTag&gt;
+
+scala> val xml2: scala.xml.NodeSeq = &lt;ParentTag&gt;
+     |     &lt;ChildTag&gt;
+     |         &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+     |     &lt;/ChildTag&gt;
+     | &lt;/ParentTag&gt;
+xml2: scala.xml.NodeSeq =
+&lt;ParentTag&gt;
+    &lt;ChildTag&gt;
+        &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+    &lt;/ChildTag&gt;
+&lt;/ParentTag&gt;</pre>
+                        <p>You can search through XML in Scala for various different attributes:</p>
+                        <h3>Inner Text</h3>
+                        <pre>scala> (xml \\ "BabyTag").text
+res0: String = Inner Text</pre>
+                        <p>If there is no match (ie the Node doesn't exist or is empty), an empty String will be returned rather than an error being thrown. You can then validate that it exists with something like <code>if(!value.isEmpty)</code>.</p>
+                        <h3>Tag Attributes (with <code>@</code>)</h3>
+                        <pre>scala> (xml \\ "BabyTag" \ "@name").text
+res1: String = Billy</pre>
+                        <p>Note: <code>(xml \\ "BabyTag" \ "@name").text</code> == <code>xml \\ "BabyTag" \@ "name"</code></p>
+                        <h3>Getting the inner tags back</h3>
+                        <pre>scala> (xml \\ "ChildTag")
+res2: scala.xml.NodeSeq =
+NodeSeq(&lt;ChildTag&gt;
+        &lt;BabyTag name="Billy"&gt;Inner Text&lt;/BabyTag&gt;
+    &lt;/ChildTag&gt;)</pre>
+                        <p>You can then <code>.map</code> on each individual node if you want to do things like creating a List of values:</p>
+                        <pre>scala> val xmlWithNamespace = &lt;ParentTag&gt;
+|     &lt;ChildTag&gt;My Text&lt;/ChildTag&gt;
+|     &lt;ChildTag&gt;My Text2&lt;/ChildTag&gt;
+| &lt;/ParentTag&gt;
+xmlWithNamespace: scala.xml.Elem =
+&lt;ParentTag&gt;
+    &lt;ChildTag&gt;My Text&lt;/ChildTag&gt;
+    &lt;ChildTag&gt;My Text2&lt;/ChildTag&gt;
+&lt;/ParentTag&gt;
+
+scala> (xmlWithNamespace \\ "ChildTag").map(_.text)
+res3: scala.collection.immutable.Seq[String] = List(My Text, My Text2)</pre>
+                        <h3>Getting a Node's namespace</h3>
+                        <pre>scala> val xmlWithNamespace = &lt;ParentTag&gt;
+|     &lt;ChildTag xmlns="https://www.example.com"&gt;My Text&lt;/ChildTag&gt;
+| &lt;/ParentTag&gt;
+xmlWithNamespace: scala.xml.Elem =
+&lt;ParentTag&gt;
+    &lt;ChildTag xmlns="https://www.example.com"&gt;My Text&lt;/ChildTag&gt;
+&lt;/ParentTag&gt;
+
+scala> (xmlWithNamespace \\ "ChildTag").map(_.namespace)
+res4: scala.collection.immutable.Seq[String] = List(https://www.example.com)</pre>
                     </div>
                 </li>
                 <li class="list-group-item">
@@ -68,13 +130,14 @@
                     </div>
                 </li>
                 <li class="list-group-item">
-                    <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml3">Modifying a single node using Scala
+                    <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml3">Modifying nodes using Scala
                     </button>
                     <div id="xml3" class="collapse">
                         <ul>
                             <li>Changing text value</li>
                             <li>Removing a node</li>
                             <li>Duplicating a node</li>
+                            <li>Adding a new node</li>
                             <li>Changing a namespace</li>
                         </ul>
                     </div>
