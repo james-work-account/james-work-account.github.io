@@ -17,7 +17,7 @@ body, html {
 }
 
 .nav > li:first-child {
-    padding-left: 3em;
+    padding-left: 5%;
 }
 
 .jumbotron {
@@ -200,6 +200,11 @@ p {
     font-size: 15px;
 }
 
+.long-code-example {
+    font-size: 15px;
+    margin: 10px 5px 15px;
+}
+
 @media (max-width: 1250px) {
     .content-body.regex {
         flex-direction: column;
@@ -249,6 +254,12 @@ p {
 }
 
 @media (max-width: 540px) {
+
+    button.long-code-example {
+        width: 100%;
+        margin: 10px 0 15px;
+        padding: 5px 0;
+    }
 
     .dropdown-menu-title > label {
         cursor: pointer;

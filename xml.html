@@ -23,9 +23,9 @@
                 <input type="checkbox" id="dropdown-menu" />
                 <div class="dropdown-menu-title">
                     <label for="dropdown-menu" onclick="toggleHamburger()">Menu&nbsp;&nbsp;>&nbsp;&nbsp;XML
-                        <div class="hamburger-box">
-                            <div class="hamburger-inner"></div>
-                        </div>
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
                     </label>
                 </div>
                 <ul class="nav nav-tabs" role="tablist">
@@ -38,7 +38,6 @@
             </nav>
         </header>
 
-        <h1 class="content-body" style="flex-flow: row">**PLACEHOLDER**</h1>
         <div class="content-body">
 
 
@@ -119,35 +118,344 @@ scala> (xmlWithNamespace \\ "ChildTag").map(_.namespace)
 res4: scala.collection.immutable.Seq[String] = List(https://www.example.com)</pre>
                     </div>
                 </li>
+
+
+
+
                 <li class="list-group-item">
                     <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml2">Accepting XML in a POST request
                     </button>
                     <div id="xml2" class="collapse">
-                        <ul>
-                            <li>parse XML</li>
-                            <li>parse anyContent</li>
-                        </ul>
+                        <p>In order to parse XML in a Scala Play application, you can either take it as type <code>xml</code> or type <code>anyContent</code>. Example POST methods which take in an XML request body and pass them back as a String are below:</p>
+                        <pre>def index: Action[NodeSeq] = Action(parse.xml) {
+  implicit request =>
+    val xml = request.body
+    Ok(xml)
+}</pre>
+                        <pre>def handlePost(): Action[AnyContent] = Action(parse.anyContent) {
+  implicit request =>
+    Try(request.body.asXml.get) match {
+      case Success(xml) => Ok(xml)
+      case Failure(ex) => UnsupportedMediaType
+    }
+}</pre>
+                        <p>It is recommended to handle the request as <code>anyContent</code> so that you can handle the <code>UnsupportedMediaType</code> exception manually (e.g. log the error then redirect or return the appropriate response code).</p>
                     </div>
                 </li>
+
+
+
+
                 <li class="list-group-item">
                     <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml3">Modifying nodes using Scala
                     </button>
                     <div id="xml3" class="collapse">
-                        <ul>
-                            <li>Changing text value</li>
-                            <li>Removing a node</li>
-                            <li>Duplicating a node</li>
-                            <li>Adding a new node</li>
-                            <li>Changing a namespace</li>
-                        </ul>
+                        <p>Modifying nodes can become quite ugly and complicated, so the best way to do this cleanly is with a helper function. Below is a function which has multiple uses, along with the XML we will manipulate. Obviously, this can be split into multiple functions too.</p>
+                        <pre>def rewriteXml(xml: NodeSeq, search: Elem, newNode: NodeSeq = NodeSeq.Empty): NodeSeq = xml.foldLeft(NodeSeq.Empty){
+  (acc: NodeSeq, curr: Node) => curr match {
+    case elem: Elem if elem.label == search.label => acc ++ newNode
+    case elem: Elem => acc ++ Elem(
+      elem.prefix,
+      elem.label,
+      elem.attributes,
+      elem.scope,
+      elem.minimizeEmpty,
+      rewriteXml(NodeSeq.fromSeq(elem.child), search, newNode):_*)
+    case node => acc ++ node
+  }
+}</pre>
+                        <pre>val xml = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+        &lt;node3&gt;James dislikes XML&lt;/node3&gt;
+        &lt;node4&gt;XML is useful&lt;/node4&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                        <ol>
+                            <li>
+                                <p><b>Changing a Nodes's text</b></p>
+                                <p>This searches for a Node and replaces it with any NodeSeq we give it. Input:</p>
+                                <pre>rewriteXml(xml, &lt;node3/&gt;, &lt;node3&gt;James loves XML&lt;/node3&gt;)</pre>
+                                <p>Output:</p>
+                                <pre>res0: scala.xml.NodeSeq = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+        &lt;node3&gt;James loves XML&lt;/node3&gt;
+        &lt;node4&gt;XML is useful&lt;/node4&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                            </li>
+                            <li>
+                                <p><b>Removing a Node</b></p>
+                                <p>This strips a given Node out of the XML by replacing the given Node with nothing. Input:</p>
+                                <pre>rewriteXml(xml, &lt;node3/&gt;)</pre>
+                                <p>Output:</p>
+                                <pre>res0: scala.xml.NodeSeq = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+
+        &lt;node4&gt;XML is useful&lt;/node4&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                            </li>
+                            <li>
+                                <p><b>Duplicating a Node</b></p>
+                                <p>To duplicate a Node, we will have to modify the original function (this modification will not break the other examples).</p>
+                                <pre>def rewriteXml(xml: NodeSeq, search: Elem, newNode: NodeSeq = NodeSeq.Empty, duplicateNode: Boolean = false): NodeSeq = xml.foldLeft(NodeSeq.Empty){
+  (acc: NodeSeq, curr: Node) => curr match {
+    case elem: Elem if elem.label == search.label && duplicateNode => acc ++ elem ++ elem
+    case elem: Elem if elem.label == search.label => acc ++ newNode
+    case elem: Elem => acc ++ Elem(
+      elem.prefix,
+      elem.label,
+      elem.attributes,
+      elem.scope,
+      elem.minimizeEmpty,
+      rewriteXml(NodeSeq.fromSeq(elem.child), search, newNode, duplicateNode):_*)
+    case node => acc ++ node
+  }
+}</pre>
+                                <p>Input:</p>
+                                <pre>rewriteXml(xml, &lt;node3/&gt;, duplicateNode = true)</pre>
+                                <p>Output:</p>
+                                <pre>res0: scala.xml.NodeSeq = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+        &lt;node3&gt;James dislikes XML&lt;/node3&gt;
+        &lt;node4&gt;XML is useful&lt;/node4&gt;&lt;node4&gt;XML is useful&lt;/node4&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                            </li>
+                            <li>
+                                <p><b>Adding a Node</b></p>
+                                <p>To add a Node, we will have to modify the original function again. A new Node will be added <i>below</i> the <code>search</code> Node.</p>
+                                <pre>def rewriteXml(xml: NodeSeq, search: Elem, newNode: NodeSeq = NodeSeq.Empty, duplicateNode: Boolean = false, addNewNode: Boolean = false): NodeSeq = xml.foldLeft(NodeSeq.Empty){
+  (acc: NodeSeq, curr: Node) => curr match {
+    case elem: Elem if elem.label == search.label && duplicateNode => acc ++ elem ++ elem
+    case elem: Elem if elem.label == search.label && addNewNode => acc ++ elem ++ newNode
+    case elem: Elem if elem.label == search.label => acc ++ newNode
+    case elem: Elem => acc ++ Elem(
+      elem.prefix,
+      elem.label,
+      elem.attributes,
+      elem.scope,
+      elem.minimizeEmpty,
+      rewriteXml(NodeSeq.fromSeq(elem.child), search, newNode, duplicateNode, addNewNode):_*)
+    case node => acc ++ node
+  }
+}</pre>
+                                <p>Input:</p>
+                                <pre>rewriteXml(xml, &lt;node4/&gt;, &lt;node5&gt;Here's an additional Node&lt;/node5&gt;, addNewNode = true)</pre>
+                                <p>Output:</p>
+                                <pre>res0: scala.xml.NodeSeq = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+        &lt;node3&gt;James dislikes XML&lt;/node3&gt;
+        &lt;node4&gt;XML is useful&lt;/node4&gt;&lt;node5&gt;Here's an additional Node&lt;/node5&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                            </li>
+                            <li>
+                                <p><b>Changing a Namespace</b></p>
+                                <p>To change or add a Namespace, we will once again have to modify the original function.</p>
+                                <pre>def rewriteXml(xml: NodeSeq, search: Elem, newNode: NodeSeq = NodeSeq.Empty, duplicateNode: Boolean = false, addNewNode: Boolean = false, namespace: String = ""): NodeSeq = xml.foldLeft(NodeSeq.Empty){
+  (acc: NodeSeq, curr: Node) => curr match {
+    case elem: Elem if elem.label == search.label && duplicateNode => acc ++ elem ++ elem
+    case elem: Elem if elem.label == search.label && addNewNode => acc ++ elem ++ newNode
+    case elem: Elem if elem.label == search.label && namespace.nonEmpty => acc ++ Elem(
+      elem.prefix,
+      elem.label,
+      elem.attributes,
+      NamespaceBinding(null, namespace, elem.scope),
+      elem.minimizeEmpty,
+      rewriteXml(NodeSeq.fromSeq(elem.child), search, newNode, duplicateNode, addNewNode):_*
+    )
+    case elem: Elem if elem.label == search.label => acc ++ newNode
+    case elem: Elem => acc ++ Elem(
+      elem.prefix,
+      elem.label,
+      elem.attributes,
+      elem.scope,
+      elem.minimizeEmpty,
+      rewriteXml(NodeSeq.fromSeq(elem.child), search, newNode, duplicateNode, addNewNode, namespace):_*)
+    case node => acc ++ node
+  }
+}</pre>
+                                <p>Input:</p>
+                                <pre>rewriteXml(xml, &lt;node4/&gt;, namespace = "https://james-work-account.github.io/")</pre>
+                                <p>Output:</p>
+                                <pre>res0: scala.xml.NodeSeq = &lt;node1&gt;
+    &lt;node2 xmlns="http://www.example.com"&gt;
+        &lt;node3&gt;James dislikes XML&lt;/node3&gt;
+        &lt;node4 xmlns="https://james-work-account.github.io/"&gt;XML is useful&lt;/node4&gt;
+    &lt;/node2&gt;
+&lt;/node1&gt;</pre>
+                            </li>
+                        </ol>
                     </div>
                 </li>
+
+
+
+
                 <li class="list-group-item">
                     <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml4">Modifying nodes using an external XSLT file
                     </button>
                     <div id="xml4" class="collapse">
+                        <p>It is probably easier to show how to do this rather than trying to explain it step by step.</p>
+                        <button type="button" class="long-code-example collapsed" data-toggle="collapse" data-target="#xmlExample1">Full example
+                        </button>
+                        <div id="xmlExample1" class="collapse">
+                            <pre>import java.io.{ByteArrayOutputStream, StringReader}
+
+import javax.xml.transform.stream.{StreamResult, StreamSource}
+import javax.xml.transform.{Result, Source, TransformerFactory}
+
+import scala.util.{Failure, Success, Try}
+import scala.xml._
+
+val xml: Elem = {
+
+          &lt;Message&gt;
+                  &lt;Header&gt;
+                      &lt;MessageDetails&gt;
+                          &lt;Name&gt;James&lt;/Name&gt;
+                          &lt;Timestamp&gt;2006-01-05T15:31:59.000&lt;/Timestamp&gt;
+                      &lt;/MessageDetails&gt;
+                      &lt;SenderDetails/&gt;
+                  &lt;/Header&gt;
+              &lt;Body&gt;
+              &lt;/Body&gt;
+          &lt;/Message&gt;
+}
+
+val ns = "http://www.example.com"
+
+val xslt =
+s"""
+|&lt;xsl:stylesheet version="1.0"
+| xmlns:xsl="http://www.w3.org/1999/XSL/Transform"&gt;
+|    &lt;xsl:output method="xml" indent="yes" omit-xml-declaration="yes" /&gt;
+|
+|    &lt;xsl:template match="Message"&gt;
+|        &lt;xsl:element name="{local-name()}" namespace="$ns"&gt;
+|            &lt;xsl:apply-templates select="node() | @*"  /&gt;
+|        &lt;/xsl:element&gt;
+|    &lt;/xsl:template&gt;
+|    &lt;xsl:template match="node() | @*"&gt;
+|        &lt;xsl:copy&gt;
+|            &lt;xsl:apply-templates select="node() | @*" /&gt;
+|        &lt;/xsl:copy&gt;
+|    &lt;/xsl:template&gt;
+|
+|&lt;/xsl:stylesheet&gt;
+""".stripMargin
+
+
+
+def transformXml(xml: String): NodeSeq = Try {
+
+  val xmlSource: Source = new StreamSource(new StringReader(xml))
+
+  val outputStream = new ByteArrayOutputStream()
+  val result: Result = new StreamResult(outputStream)
+
+  val transformerFactory = TransformerFactory.newInstance
+  val transformer = transformerFactory.newTransformer(new StreamSource(new StringReader(xslt)))
+
+  transformer.transform(xmlSource, result)
+  outputStream.toString.replaceAll(":?ns0:?", "")
+} match {
+  case Success(xmlAsString) =&gt;
+    XML.loadString(xmlAsString)
+  case Failure(ex: Throwable) =&gt;
+    throw ex
+}
+
+transformXml(xml.toString())</pre>
+                        </div>
+                        <p>This example uses an XSLT which is loaded from a String, but loading from an external file isn't too different. This specific XSLT adds a namespace to the <code>Message</code> Node.</p>
+                        <p>There are ways to transform XML using Scala libraries, but the simplest way I've found is to use the Java TransformerFactory.  Most of the work is done for you behind the scenes; all you need to do it set it up correctly.</p>
+                        <p>What you will need:</p>
+                        <ul style="padding-bottom: 15px;">
+                            <li>XML to be transformed, as a <code>String</code></li>
+                            <li>XSLT to be used, loaded using a StringReader in this case but can be loaded from an external file using a Java FileReader</li>
+                        </ul>
+                        <p>In my example I have a <code>replaceAll</code> addition, as the actual output of this specific XSLT changes the Message node to <code>&lt;ns0:Message xmlns:ns0="http://www.example.com"&gt;</code> rather than <code>&lt;Message xmlns="http://www.example.com"&gt;</code>; it is not necessary.</p>
+                        <p>After the transformation is complete, you can turn the transformed XML into a NodeSeq using <code>XML.loadString(<i>your XML</i>)</code>. I have put this transformation in a Try block so that if it fails at any point, the exception will be caught. In this example there is just one generic <code>Failure(ex: Throwable)</code> catch, but you can specify which different exceptions you wish to catch if you want to handle them all differently (e.g. with different bespoke logging messages).</p>
+                    </div>
+                </li>
+
+
+
+
+                <li class="list-group-item">
+                    <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#xml5">XXE/DTD attack protection
+                    </button>
+                    <div id="xml5" class="collapse">
+                        <p>Any applications which accept external XML with DocType Declarations in them are vulnerable to XXE attacks by default. Thankfully, the Playframework handles these attacks automatically by not allowing any DTD in XML POSTed to your application. Below is an example of some XML containing a DTD.</p>
+                        <pre>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;!DOCTYPE foo [
+&lt;!ELEMENT foo (bar)&gt;
+	&lt;!ELEMENT bar (#PCDATA)&gt;
+]&gt;
+&lt;foo&gt;
+	&lt;bar&gt;string&lt;/bar&gt;
+&lt;/foo&gt;</pre>
+                        <p>This example is harmless, but it could be much more serious.</p>
+                        <p>In order to test that your Play application is secure against XXE attacks, you can write the following Routes test:</p>
+                        <button type="button" class="long-code-example collapsed" data-toggle="collapse" data-target="#xmlExample2">Full example
+                        </button>
+                        <div id="xmlExample2" class="collapse">
+                            <pre>import org.scalatestplus.play.PlaySpec
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.mvc.Call
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{POST => POST_REQUEST, _}
+
+class RoutesSpec extends PlaySpec with GuiceOneAppPerSuite {
+
+  /**
+    * Test to verify POSTing XML with DTD will fail due to default Application behaviour.
+    * By default, Play blocks all XML with any DTD in it due to potential XXE vulnerability.
+    * This means that the call will fall over at `Action.async(parse.xml)` (or equivalent).
+    * `scala.xml.XML.loadString` has XXE vulnerability, so POSTing the XML as `scala.xml.Unparsed` gets around this.
+    *
+    */
+
+  "The Play Application" must {
+    "not handle XXE XML" in {
+
+    lazy val xmlWithDTD = scala.xml.Unparsed(
+        """&lt;?xml version="1.0" encoding="utf-8"?&gt;
+          |&lt;!DOCTYPE foo [
+          |&lt;!ELEMENT foo (bar)&gt;
+          |	&lt;!ELEMENT bar (#PCDATA)&gt;
+          |]&gt;
+          |&lt;foo&gt;
+          |	&lt;bar&gt;string&lt;/bar&gt;
+          |&lt;/foo&gt;
+        """.stripMargin)
+
+      val Some(result) = route(app, FakeRequest(Call(POST_REQUEST, "/your-app-route"))
+        .withXmlBody(xmlWithDTD))
+      )
+      status(result) mustEqual 400
+      contentAsString(result) mustBe ""
+    }
+  }
+}</pre>
+                        </div>
+                        <p>Importantly, the usual <code>loadString</code> method is vulnerable to attacks so loading the XML as a <code>scala.xml.Unparsed</code> gets around this.</p>
+                        <p>If you are accepting XML without the security of the Playframework, there are other ways to accept XML safely. My personal preference is to use a secure SAX parser when calling the <code>loadString</code> method.</p>
+                        <pre>def secureSAXParser = {
+  val saxParserFactory = SAXParserFactory.newInstance()
+  saxParserFactory.setFeature("http://xml.org/sax/features/external-general-entities", false)
+  saxParserFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true)
+  saxParserFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false)
+  saxParserFactory.newSAXParser()
+}
+
+XML.withSAXParser(secureSAXParser).loadString(<i>your XML</i>)</pre>
+                        <p>This protects against things like XXE attacks.</p>
 
                     </div>
+
                 </li>
             </ul>
         </div>
