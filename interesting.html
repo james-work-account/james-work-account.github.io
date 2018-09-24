@@ -236,6 +236,78 @@ res1: Int = 121</pre>
                     <p>Note: the Implicit Class must be in-scope in order for this to work - you can get around this by doing something like importing it into scope. They must also always be inside another <code>trait</code>/<code>class</code>/<code>object</code>, and can only take one non-implicit argument in their constructor.</p>
                 </div>
             </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#type-erasure">Navigating Type Erasure on match/case statements
+                </button>
+                <div id="type-erasure" class="collapse">
+                    <h4>Type erasure is where List[String] == List[Int] at runtime with the JVM. Here is how to get around that...</h4>
+
+                    <p>With the following code, the final <code>case _</code> will never be hit:</p>
+                    <pre>import play.api.libs.json._
+
+def matchThis(list: List[JsValue]): Any = {
+  list match {
+    case value: List[JsObject] => "ABC"
+    case _ => 123
+  }
+}
+
+val list = List(Json.obj())
+
+matchThis(list) // res0: Any = ABC
+
+val list2 = List(JsString("123213"))
+
+matchThis(list2) // res1: Any = ABC</pre>
+                    <p>This is because Scala runs using the JVM, and at runtime the JVM will only see that it is matching against <code>List[ANYTHING]</code> and will succeed even when passed a <code>List[JsString]</code>. The JVM ignores Generics at runtime.</p>
+                    <p>To get around this, you can use <code>scala.reflect.runtime.universe</code> and TypeTags to match against types:</p>
+                    <pre>import scala.reflect.runtime.universe._
+import play.api.libs.json._
+
+def matchThis[A: TypeTag](list: List[A]) = list match {
+  case value: List[JsObject @unchecked] if typeOf[A] =:= typeOf[JsObject] => "ABC"
+  case _ => 123
+}
+
+val list = List(Json.obj())
+
+matchThis(list) // res0: Any = ABC
+
+val list2 = List(JsString("123213"))
+
+matchThis(list2) // res1: Any = 123
+
+val list3 = List(Json.obj(), Json.obj())
+
+matchThis(list3) // res2: Any = ABC
+
+val list4 = List(JsString("123213"), JsString("abcabcabcabca"))
+
+matchThis(list4) // res3: Any = 123</pre>
+                    <p>This example uses PlayFramework's JSON case classes to match but obviously can be applied to any class/type/whatever comparison.</p>
+                    <p>You can also use ClassTag to achieve a similar effect - example below copied from <a href="https://stackoverflow.com/a/21640639/8230810">here</a>. See link for more info.</p>
+                    <pre>import scala.reflect.{ClassTag, classTag}
+def matchList[A : ClassTag](list: List[A]) = list match {
+  case strlist: List[String @unchecked] if classTag[A] == classTag[String] => println("A List of strings!")
+  case intlist: List[Int @unchecked] if classTag[A] == classTag[Int] => println("A list of ints!")
+}</pre>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <button type="button" class="code-name collapsed" data-toggle="collapse" data-target="#for-yield">For/Yield
+                </button>
+                <div id="for-yield" class="collapse">
+                    <p>Do not mix returns! <code>for (a <- List(1, 2, 3) yield a * a</code> is just syntactic sugar for <code>List(1, 2, 3).map(a => a * a)</code>. You cannot do something like this:</p>
+                    <pre>import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
+for {
+  a <- Future("hi")
+  b <- List(1, 2, 3)
+} yield (a, b)</pre>
+                    <p>List != Future!</p>
+                </div>
+            </li>
         </ul>
     </div>
     </div>
