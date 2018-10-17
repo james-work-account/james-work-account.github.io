@@ -116,6 +116,53 @@ xmlWithNamespace: scala.xml.Elem =
 
 scala> (xmlWithNamespace \\ "ChildTag").map(_.namespace)
 res4: scala.collection.immutable.Seq[String] = List(https://www.example.com)</pre>
+                        <h3>Searching through all Nodes, including nested Nodes</h3>
+                        <p>Sometimes, you will want to get back all nodes (nested or not). To do this, search with the XML search wildcard <code>_</code>, ie <code>(xml \\ "_")</code>.</p>
+                        <p>For example, to count the number of every Node without knowing the structure of the XML beforehand:</p>
+                        <pre>scala> val xml = &lt;family&gt;
+     |     &lt;mother name="julie" /&gt;
+     |     &lt;father name="harold" /&gt;
+     |     &lt;child name="billy" status="good child" /&gt;
+     |     &lt;child name="charlie" status="good child" /&gt;
+     |     &lt;child name="mandy" status="bad child" /&gt;
+     |     &lt;child name="nigel" status="bad child" /&gt;
+     |     &lt;extendedfamily&gt;
+     |         &lt;uncle name="jeff" /&gt;
+     |         &lt;auntie name="vicky" /&gt;
+     |         &lt;cousin name="little boy 1" /&gt;
+     |         &lt;cousin name="little boy 2" /&gt;
+     |     &lt;/extendedfamily&gt;
+     | &lt;/family&gt;
+xml: scala.xml.Elem =
+&lt;family&gt;
+    &lt;mother name="julie"/&gt;
+    &lt;father name="harold"/&gt;
+    &lt;child name="billy" status="good child"/&gt;
+    &lt;child name="charlie" status="good child"/&gt;
+    &lt;child name="mandy" status="bad child"/&gt;
+    &lt;child name="nigel" status="bad child"/&gt;
+    &lt;extendedfamily&gt;
+        &lt;uncle name="jeff"/&gt;
+        &lt;auntie name="vicky"/&gt;
+        &lt;cousin name="little boy 1"/&gt;
+        &lt;cousin name="little boy 2"/&gt;
+    &lt;/extendedfamily&gt;
+&lt;/family&gt;
+
+scala> val familyMap = (xml \\ "_").groupBy(_.label).map { case (k, v) => (k, v.size) }
+familyMap: scala.collection.immutable.Map[String,Int] = Map(mother -> 1, auntie -> 1, uncle -> 1, child -> 4, extendedfamily -> 1, father -> 1, cousin -> 2, family -> 1)
+
+scala> familyMap foreach {
+     |     case (k, v) => println(s"$k count: $v")
+     | }
+mother count: 1
+auntie count: 1
+uncle count: 1
+child count: 4
+extendedfamily count: 1
+father count: 1
+cousin count: 2
+family count: 1</pre>
                     </div>
                 </li>
 
