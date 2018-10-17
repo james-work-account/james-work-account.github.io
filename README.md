@@ -11,15 +11,18 @@
   - Either[Left, Right]
   - Fanciness with .apply()
   - Implicit Classes
+  - Navigating Type Erasure on match/case statements
+  - For/Yield
 - Regex
   - Getting values out of a string using Regex
   - Getting multiple values out of a string using Regex
   - Regex matching
 - XML
   - Basics of XML in Scala
-  - ~~Accepting XML in a POST request~~ (TBC)
-  - ~~Modifying nodes using Scala~~ (TBC)
-  - ~~Modifying nodes using an external XSLT file~~ (TBC)
+  - Accepting XML in a POST request
+  - Modifying nodes using Scala
+  - Modifying nodes using an external XSLT file
+  - XXE/DTD attack protection
 - ~~AWS~~ (TBC)
 
 ---
